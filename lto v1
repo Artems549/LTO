@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operator Logging</title>
+    <script>
+        async function logOperation(operation, action) {
+            const operatorId = prompt("Введите ваш ID оператора:");
+            if (!operatorId) {
+                alert("ID оператора обязателен!");
+                return;
+            }
+
+            const response = await fetch("http://<ваш_IP_или_домен>:5000/log", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    operation: operation,
+                    action: action,
+                    operator_id: operatorId
+                })
+            });
+
+            const result = await response.json();
+            if (result.status === "success") {
+                alert(`Операция ${action} для ${operation} зарегистрирована в ${result.timestamp}`);
+            } else {
+                alert(`Ошибка: ${result.message}`);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Логирование операций оператора</h1>
+    <button onclick="logOperation('setup', 'start')">Начать Наладку</button>
+    <button onclick="logOperation('setup', 'stop')">Закончить Наладку</button>
+    <br><br>
+    <button onclick="logOperation('testing', 'start')">Начать Отработку</button>
+    <button onclick="logOperation('testing', 'stop')">Закончить Отработку</button>
+    <br><br>
+    <button onclick="logOperation('measurement', 'start')">Начать Замер</button>
+    <button onclick="logOperation('measurement', 'stop')">Закончить Замер</button>
+</body>
+</html>
